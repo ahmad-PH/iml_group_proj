@@ -8,6 +8,9 @@ from iml_group_proj.train_models import train_models
 from iml_group_proj.features.common.data import load
 from iml_group_proj.models.mlp import BASIC_MLP
 
+from sklearn.naive_bayes import GaussianNB
+from sklearn.svm import SVC
+
 IS_BOW = False # Bag-of-words or TfIdf
 
 classes, train, test = load()
@@ -25,8 +28,8 @@ y_test = le.transform(test["class"])
 models = [
         # (MLPClassifier(random_state=1, max_iter=100, verbose=True), {"hidden_layer_sizes":[(100, 100), (200, 200)]}, 'MLP_100'),
         (BASIC_MLP, None, 'MLP_100'),
-        # (GaussianNB(), {},'NaiveBayes'),
-        # (SVC(), {"gamma": ["auto"], "kernel": ["rbf", "sigmoid", "poly"]},'SVM'),
+        (GaussianNB(), None,'NaiveBayes'),
+        (SVC(), {"gamma": ["auto"], "kernel": ["rbf", "sigmoid", "poly"]},'SVM'),
         # (SVC, {"gamma": "auto", "kernel": "rbf"},'SVM'),
         ]
 

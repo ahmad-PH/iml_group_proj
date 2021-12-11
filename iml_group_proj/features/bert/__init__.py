@@ -15,14 +15,13 @@ title_pipelines = [
         ]
 
 sypnosis_pipelines = [
-        remove_punc,
+        # remove_punc,
         tokenize_words,
         truncate_words(250),
         concat_tokens,
         ] + title_pipelines
 
 def get_BERT_features(train, test):
-    # TODO: Add functionality to get only title/sypnosis optimally
     cleaned_train_title = clean_text(train.title, title_pipelines)
     cleaned_test_title = clean_text(test.title, title_pipelines)
 

@@ -11,7 +11,7 @@ from iml_group_proj.train_models import train_models
 from sklearn.neural_network import MLPClassifier
 
 classes, train, test = load()
-train = train.sample(frac=0.5)
+train = train.sample(frac=0.4)
 X_train, X_test = get_BERT_features(train, test)
 
 le = preprocessing.LabelEncoder()
@@ -22,9 +22,9 @@ y_test = le.transform(test["class"])
 models = [
         # (BASIC_MLP, None, 'MLP_100'),
         # (MLPClassifier(random_state=1, max_iter=100, early_stopping=True), {"hidden_layer_sizes": [(150, 150), (200, 200), (100, 150, 100), (50, 50, 50, 50)]}, 'MLP'),
-        (MLPClassifier(random_state=1, max_iter=250, hidden_layer_sizes=(450, 450), early_stopping=True), None, 'MLP_450x2'),
-        (MLPClassifier(random_state=1, max_iter=250, hidden_layer_sizes=(450, 450, 450), early_stopping=True), None, 'MLP_450x3'),
-        (MLPClassifier(random_state=1, max_iter=250, hidden_layer_sizes=(600, 600), early_stopping=True), None, 'MLP_600x2'),
+        (MLPClassifier(random_state=1, max_iter=250, hidden_layer_sizes=(800, 800), early_stopping=True), None, 'MLP_800x2'),
+        (MLPClassifier(random_state=1, max_iter=250, hidden_layer_sizes=(900,  900), early_stopping=True), None, 'MLP_900x2'),
+        (MLPClassifier(random_state=1, max_iter=250, hidden_layer_sizes=(1000, 1000), early_stopping=True), None, 'MLP_1000x2'),
         ]
 
 # Hacky way to remove the sypnosis
