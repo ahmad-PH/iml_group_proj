@@ -5,7 +5,6 @@ from sklearn.model_selection import HalvingGridSearchCV
 from iml_group_proj.features.common.config import RANDOM_STATE
 
 class TrainedModel(NamedTuple):
-
     name: str
     model: Any # Any functoin that has .predict_proba()
     info: Dict[str, Any] # Information about the training (e.g., is_train?, with_sypnosis?)

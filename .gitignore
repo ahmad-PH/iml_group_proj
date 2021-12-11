@@ -5,3 +5,4 @@ scratchpad/*
 *_data/
 .python-version
 *.egg-info/*
+kernels.json

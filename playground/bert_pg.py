@@ -8,6 +8,7 @@ from iml_group_proj.features.common.data import load
 from iml_group_proj.models.mlp import BASIC_MLP
 from iml_group_proj.train_models import train_models
 
+from sklearn.neural_network import MLPClassifier
 
 classes, train, test = load()
 train = train.sample(frac=0.25)
@@ -19,8 +20,8 @@ y_test = le.transform(test["class"])
 
 # Training Phase
 models = [
-        (BASIC_MLP, 'MLP_100'),
-        # (MLPClassifier(random_state=1, max_iter=10, hidden_layer_sizes=(100, 100)), 'MLP_10'),
+        # (BASIC_MLP, None, 'MLP_100'),
+        (MLPClassifier(random_state=1, max_iter=100, early_stopping=True), {"hidden_layer_sizes": [(150, 150), (200, 200), (100, 150, 100), (50, 50, 50, 50)]}, 'MLP'),
         # (MLPClassifier(random_state=1, max_iter=150, hidden_layer_sizes=(100, 100)), 'MLP_150'),
         ]
 
