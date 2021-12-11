@@ -1,28 +1,27 @@
 import functools
 import numpy as np
 import pandas as pd
-from typing import Callable, Dict, List
+from typing import Callable, Dict, List, Any
 from sklearn.experimental import enable_halving_search_cv
 from sklearn.model_selection import HalvingGridSearchCV
 from iml_group_proj.features.common.config import RANDOM_STATE
 from sklearn.metrics import precision_recall_fscore_support, accuracy_score, confusion_matrix
 
-def evaluate_many(models, X_train, y_train, X_test, y_test):
+from iml_group_proj.train_models import TrainedModel
+
+def evaluate_many(models: List[TrainedModel], X_train, y_train, X_test, y_test):
     results = []
-    for (model, params, name) in models:
-        clf = HalvingGridSearchCV(model, params, random_state=RANDOM_STATE, cv=1).fit(X_train, y_train)
+    for trained_model in models:
+        clf = trained_model.model
         y_train_pred = clf.predict_proba(X_train)
         y_test_pred = clf.predict_proba(X_test)
 
-        train_row = evaluate(y_train_pred, y_train, name)
+        train_row = evaluate(y_train_pred, y_train, trained_model.name, trained_model.info)
         train_row["is_train"] = True
-        train_row["params"] = clf.best_params_
-
-        test_row = evaluate(y_test_pred, y_test, name)
-        test_row["is_train"] = False
-        test_row["params"] = clf.best_params_
-
         results.append(train_row)
+
+        test_row = evaluate(y_test_pred, y_test, trained_model.name, trained_model.info)
+        test_row["is_train"] = False
         results.append(test_row)
 
     return pd.DataFrame(results)
@@ -44,12 +43,13 @@ def accuracy(label, prediction) -> Dict[str, float]:
 def evaluate(
         prediction,
         label,
-        name: str = "Untitled",
+        name: str,
+        info: Dict[str, Any],
         flows: List[Callable] = [accuracy, precision_recall_f1]
         ):
 
     flows = flows + [lambda a, b: {"name": name}]
-    results = [f(label, prediction) for f in flows]
+    results = [f(label, prediction) for f in flows] + [info]
 
     return functools.reduce(
         lambda a,b: {**a, **b}, # Adding two dicts together.
