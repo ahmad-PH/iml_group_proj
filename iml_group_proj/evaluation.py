@@ -2,17 +2,25 @@ import functools
 import numpy as np
 import pandas as pd
 from typing import Callable, Dict, List
+from sklearn.experimental import enable_halving_search_cv
+from sklearn.model_selection import HalvingGridSearchCV
+from iml_group_proj.features.common.config import RANDOM_STATE
 from sklearn.metrics import precision_recall_fscore_support, accuracy_score, confusion_matrix
 
-def evaluate_many(models_with_names, X_train, y_train, X_test, y_test):
+def evaluate_many(models, X_train, y_train, X_test, y_test):
     results = []
-    for (model, name) in models_with_names:
-        clf = model.fit(X_train, y_train)
+    for (model, params, name) in models:
+        clf = HalvingGridSearchCV(model, params, random_state=RANDOM_STATE, cv=1).fit(X_train, y_train)
         y_train_pred = clf.predict_proba(X_train)
         y_test_pred = clf.predict_proba(X_test)
 
-        train_row = evaluate(y_train_pred, y_train, name+"__train")
-        test_row = evaluate(y_test_pred, y_test, name+"__test")
+        train_row = evaluate(y_train_pred, y_train, name)
+        train_row["is_train"] = True
+        train_row["params"] = clf.best_params_
+
+        test_row = evaluate(y_test_pred, y_test, name)
+        test_row["is_train"] = False
+        test_row["params"] = clf.best_params_
 
         results.append(train_row)
         results.append(test_row)

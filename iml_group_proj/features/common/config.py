@@ -1,1 +1,2 @@
 LOC_DATA_PATH = "trainTest.pk"
+RANDOM_STATE=1024
