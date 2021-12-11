@@ -11,7 +11,7 @@ from iml_group_proj.train_models import train_models
 from sklearn.neural_network import MLPClassifier
 
 classes, train, test = load()
-train = train.sample(frac=0.25)
+train = train.sample(frac=0.5)
 X_train, X_test = get_BERT_features(train, test)
 
 le = preprocessing.LabelEncoder()
@@ -21,8 +21,10 @@ y_test = le.transform(test["class"])
 # Training Phase
 models = [
         # (BASIC_MLP, None, 'MLP_100'),
-        (MLPClassifier(random_state=1, max_iter=100, early_stopping=True), {"hidden_layer_sizes": [(150, 150), (200, 200), (100, 150, 100), (50, 50, 50, 50)]}, 'MLP'),
-        # (MLPClassifier(random_state=1, max_iter=150, hidden_layer_sizes=(100, 100)), 'MLP_150'),
+        # (MLPClassifier(random_state=1, max_iter=100, early_stopping=True), {"hidden_layer_sizes": [(150, 150), (200, 200), (100, 150, 100), (50, 50, 50, 50)]}, 'MLP'),
+        (MLPClassifier(random_state=1, max_iter=250, hidden_layer_sizes=(450, 450), early_stopping=True), None, 'MLP_450x2'),
+        (MLPClassifier(random_state=1, max_iter=250, hidden_layer_sizes=(450, 450, 450), early_stopping=True), None, 'MLP_450x3'),
+        (MLPClassifier(random_state=1, max_iter=250, hidden_layer_sizes=(600, 600), early_stopping=True), None, 'MLP_600x2'),
         ]
 
 # Hacky way to remove the sypnosis
@@ -35,5 +37,5 @@ result_df_2 = evaluate_many(trained_models_2, X_train, y_train, X_test, y_test)
 # Full Evaluation
 result_df_full = pd.concat([result_df_1, result_df_2], axis=0)
 
-print(result_df_full.head(20))
+print(result_df_full.head(100))
 result_df_full.to_csv(f'_output/bert_result_{time.strftime("%Y%m%d-%H%M%S")}.csv')

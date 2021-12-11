@@ -15,4 +15,30 @@ def load(data_path: PathLike[str] = LOC_DATA_PATH, sample_frac:float = 1.0) -> T
 
 
 def tuple_to_df(data: List[Tuple]) -> pd.DataFrame:
-    return pd.DataFrame(data, columns=["class", "title", "sypnosis", "id"])
+    df = pd.DataFrame(data, columns=["class", "title", "sypnosis", "id"])
+    df["class_name"] = df["class"].apply(lambda x: class_to_name_map.get(x, "Unknown"))
+    return df
+
+class_to_name_map = {
+        "A":	"General Works",
+        "B":	"Philosophy. Psychology. Religion",
+        "C":	"Auxiliary Sciences of History",
+        "D":	"World History and History of Europe, Asia, Africa, Australia, New Zealand, etc.",
+        "E":	"History of the Americas (E)",
+        "F":	"History of the Americas (F)",
+        "G":	"Geography. Anthropology. Recreation",
+        "H":	"Social Sciences",
+        "J":	"Political Science",
+        "K":	"Law",
+        "L":	"Education",
+        "M":	"Music and Books on Music",
+        "N":	"Fine Arts",
+        "P":	"Language and Literature",
+        "Q":	"Science",
+        "R":	"Medicine",
+        "S":	"Agriculture",
+        "T":	"Technology",
+        "U":	"Military Science",
+        "V":	"Naval Science",
+        "Z":	"Bibliography. Library Science. Information Resources (General)",
+        }
